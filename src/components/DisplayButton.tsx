@@ -11,7 +11,13 @@ const DisplayButton = ({ numbers, handleClick }: DisplayButtonProps) => {
       {numbers.length > 0 ? (
         <div>
           {numbers.map((num) => (
-            <button onClick={() => handleClick(num)}>{num}</button>
+            <button
+              onClick={() => handleClick(num)}
+              key={num}
+              className="p-2 bg-purple-500 text-white rounded m-1 hover:opacity-70 cursor-pointer"
+            >
+              {num}
+            </button>
           ))}
         </div>
       ) : (
