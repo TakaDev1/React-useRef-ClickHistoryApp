@@ -1,32 +1,127 @@
-# React + TypeScript + Vite
+# React-useRef-ClickHistoryApp
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Reactの `useRef` を使って、**前回クリックしたボタンの値を保持する**練習用アプリです。
 
-Currently, two official plugins are available:
+## 📌 概要
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+1〜5のボタンを表示し、クリックしたボタンの値を `useRef` に保存します。
 
-## React Compiler
+ボタンをクリックすると、現在クリックされたボタンを保存する前に、**前回クリックされたボタン**をコンソールへ表示します。
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+`useRef` は値を保持したまま、値の変更によってコンポーネントを再レンダリングしないという特徴があります。
 
-## Expanding the Oxlint configuration
+## 🛠 使用技術
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+* React
+* TypeScript
+* Vite
+* Tailwind CSS
+* useRef
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+## 📂 ディレクトリ構成
+
+```text
+src/
+├── components/
+│   ├── DisplayButton.tsx
+│   └── HandlePreviousButton.tsx
+├── App.tsx
+├── App.css
+├── index.css
+└── main.tsx
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## 🧩 コンポーネント
+
+### HandlePreviousButton
+
+`useRef` を使用して、前回クリックされたボタンの値を保持します。
+
+```tsx
+const prevBtn = useRef<number | null>(null);
+```
+
+クリック時には、まず現在保持している値を確認します。
+
+```tsx
+console.log(
+  `前回押されたボタン: ${
+    prevBtn.current === null ? "空です" : prevBtn.current
+  }`,
+);
+
+prevBtn.current = num;
+```
+
+### DisplayButton
+
+`numbers` を受け取り、1〜5のボタンを表示します。
+
+クリックされたボタンの値は `handleClick` を通して親コンポーネントへ渡します。
+
+```tsx
+{numbers.map((num) => (
+  <button
+    key={num}
+    onClick={() => handleClick(num)}
+  >
+    {num}
+  </button>
+))}
+```
+
+## 🔄 処理の流れ
+
+```text
+App
+ ↓
+HandlePreviousButton
+ ↓
+DisplayButton
+ ↓
+ボタンをクリック
+ ↓
+handleClick(num)
+ ↓
+prevBtn.current を確認
+ ↓
+現在のボタン番号を prevBtn.current に保存
+```
+
+例えば、
+
+```text
+1 → 3 → 5
+```
+
+の順番でクリックした場合、コンソールには、
+
+```text
+前回押されたボタン: 空です
+前回押されたボタン: 1
+前回押されたボタン: 3
+```
+
+と表示されます。
+
+## 💡 学習ポイント
+
+* `useRef` の基本的な使い方
+* `.current` による値の保持
+* `useRef` と `useState` の違い
+* 親コンポーネントから子コンポーネントへのprops渡し
+* TypeScriptによるpropsの型定義
+* コンポーネントの責務分離
+
+## 🚀 起動方法
+
+```bash
+npm install
+npm run dev
+```
+
+表示されたURLへアクセスしてください。
+
+## 📝 学習目的
+
+このアプリでは、Reactの `useRef` を使って**「再レンダリングを発生させずに値を保持する」**仕組みを理解することを目的としています。
